@@ -26,40 +26,21 @@ const CreateAccount = ({ supabase, session, setCreateAccount }) => {
       const { data, error } = await supabase.auth.signUp({
         email: email,
         password: password,
+        options: {
+          data: {
+            firstname: firstname,
+            lastname: lastname,
+            user_role: role,
+            pos: position,
+          },
+        },
       });
-      setNewUserId(data.user.id);
+      console.log("data", data);
       setSuccess(true);
     } catch (err) {
       console.log(err);
     }
   };
-
-  const updateUser = async () => {
-    try {
-      console.log("running");
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          username: email,
-          firstname: firstname,
-          lastname: lastname,
-          role: role,
-          pos: position,
-        })
-        .eq("id", newUserId);
-      console.log("updateError", error);
-      console.log("newid", newUserId);
-      console.log("FN", firstname);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    if (success) {
-      updateUser(newUserId);
-    }
-  }, [success]);
 
   return (
     <Flex
@@ -99,9 +80,9 @@ const CreateAccount = ({ supabase, session, setCreateAccount }) => {
                   setRole(e.target.value);
                 }}
               >
-                <option value="authenticated">Client</option>
-                <option value="">Staff</option>
-                <option value="service_role">Admin</option>
+                <option value="client">Client</option>
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
               </Select>
             </Flex>
 

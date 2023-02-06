@@ -37,12 +37,12 @@ export default function UpdateUser({ supabase, setUpdateUser }) {
   const updateUser = async () => {
     try {
       const { data, error } = await supabase
-        .from("profiles")
+        .from("users")
         .update({
           username: email,
           firstname: firstname,
           lastname: lastname,
-          role: role,
+          user_role: role,
           pos: position,
         })
         .eq("id", user.id)
@@ -90,9 +90,9 @@ export default function UpdateUser({ supabase, setUpdateUser }) {
                   setRole(e.target.value);
                 }}
               >
-                <option value="authenticated">Client</option>
-                <option value="">Staff</option>
-                <option value="service_role">Admin</option>
+                <option value="client">Client</option>
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
               </Select>
             </Flex>
             <Flex flexDirection="column">

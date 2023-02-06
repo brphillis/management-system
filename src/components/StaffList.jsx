@@ -16,8 +16,8 @@ const staffList = ({ supabase }) => {
 
   const fetchStaffList = async () => {
     try {
-      const { data, error } = await supabase.from("profiles").select();
-      console.log(data);
+      const { data, error } = await supabase.from("users").select();
+      console.log("userlist", data);
     } catch (err) {
       console.log(err);
     }
