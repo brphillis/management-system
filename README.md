@@ -1,4 +1,4 @@
-//current supabase initial query
+current supabase initial query
 
 create table users (
   id uuid references auth.users not null primary key,
@@ -9,6 +9,7 @@ create table users (
   pos text
 );
 
+```bash
 create or replace function public.handle_new_user() 
 returns trigger as $$
 begin
@@ -21,6 +22,7 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+  ```
 
 
 
