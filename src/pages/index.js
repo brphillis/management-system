@@ -22,7 +22,11 @@ export default function Home() {
       </Head>
 
       <main>
-        <Flex>
+        <Flex
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
           <Image
             src={backgroundImage}
             alt="loginBackground"
