@@ -2,17 +2,16 @@ import { useState, useEffect } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 
 import {
-  Box,
   Flex,
   Button,
-  Image,
+  Heading,
   Input,
   FormControl,
   FormLabel,
   Select,
 } from "@chakra-ui/react";
 
-export default function UpdateUser({ supabase }) {
+export default function UpdateUser({ supabase, setUpdateUser }) {
   const user = useUser();
 
   const [email, setEmail] = useState(null);
@@ -20,12 +19,14 @@ export default function UpdateUser({ supabase }) {
   const [firstname, setFirstname] = useState(null);
   const [lastname, setLastname] = useState(null);
   const [role, setRole] = useState(null);
+  const [position, setPosition] = useState(null);
   const [success, setSuccess] = useState(false);
 
   const setDetails = () => {
     setEmail(user.email);
     setFirstname(user.user_metadata.firstname);
     setLastname(user.user_metadata.lastname);
+    setPosition(user.user_metadata.position);
     setUserId(user.id);
   };
 
@@ -33,15 +34,20 @@ export default function UpdateUser({ supabase }) {
     setDetails();
   }, []);
 
-  useEffect(() => {
-    console.log("user", user);
-  }, [user]);
-
   const updateUser = async () => {
     try {
-      const { data, error } = await supabase.auth.updateUser({
-        data: { firstname: firstname, lastname: lastname, role: role },
-      });
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          username: email,
+          firstname: firstname,
+          lastname: lastname,
+          role: role,
+          pos: position,
+        })
+        .eq("id", user.id)
+        .select();
+      setSuccess(true);
     } catch (err) {
       console.log(err);
     }
@@ -65,8 +71,15 @@ export default function UpdateUser({ supabase }) {
       alignItems="center"
       justifyContent="center"
     >
-      <form onSubmit={updateUser}>
+      <form
+        onSubmit={(e) => {
+          updateUser(), e.preventDefault();
+        }}
+      >
         <FormControl>
+          <Heading fontSize="18px" textAlign="center" mb="5">
+            Update User
+          </Heading>
           <Flex flexDirection="column" alignItems="center" gap="8px">
             <Flex flexDirection="column" alignItems="center">
               <FormLabel textAlign="center">Role</FormLabel>
@@ -77,35 +90,24 @@ export default function UpdateUser({ supabase }) {
                   setRole(e.target.value);
                 }}
               >
-                <option
-                  selected={
-                    (user.user_metadata.role = "authenticated"
-                      ? "selected"
-                      : null)
-                  }
-                  value="authenticated"
-                >
-                  Customer
-                </option>
-                <option
-                  selected={
-                    (user.user_metadata.role = "staff" ? "selected" : null)
-                  }
-                  value=""
-                >
-                  Staff
-                </option>
-                <option
-                  selected={
-                    (user.user_metadata.role = "service_role"
-                      ? "selected"
-                      : null)
-                  }
-                  value="service_role"
-                >
-                  Admin
-                </option>
+                <option value="authenticated">Client</option>
+                <option value="">Staff</option>
+                <option value="service_role">Admin</option>
               </Select>
+            </Flex>
+            <Flex flexDirection="column">
+              <FormLabel textAlign="center">Position</FormLabel>
+              <Input
+                id="Input_Position"
+                backgroundColor="gray.200"
+                borderRadius="2px"
+                border="1px"
+                borderColor="gray.300"
+                onChange={(e) => {
+                  setPosition(e.target.value);
+                }}
+                value={position || ""}
+              ></Input>
             </Flex>
             <Flex flexDirection="column" alignItems="center">
               <FormLabel textAlign="center">Email</FormLabel>
@@ -170,10 +172,13 @@ export default function UpdateUser({ supabase }) {
               fontSize="12px"
               color="white"
               _hover={{ backgroundColor: "gray.700" }}
+              onClick={() => {
+                setUpdateUser(false);
+              }}
             >
               Back
             </Button>
-            {success && <p>Account Has Been Created</p>}
+            {success && <p>Account Has Been Updated</p>}
           </Flex>
         </FormControl>
       </form>

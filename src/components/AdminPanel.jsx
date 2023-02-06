@@ -11,7 +11,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-const AdminPanel = ({ setCreateAccount }) => {
+const AdminPanel = ({ setCreateAccount, setUpdateUser }) => {
   return (
     <Box
       backgroundColor="white"
@@ -103,8 +103,11 @@ const AdminPanel = ({ setCreateAccount }) => {
                 backgroundColor="#e5e5e5"
                 _hover={{ bg: "#cbd5e1" }}
                 border="1px solid #f1f5f9"
+                onClick={() => {
+                  setUpdateUser(true);
+                }}
               >
-                Change User
+                Update User
               </Button>
             </Flex>
           </CardBody>

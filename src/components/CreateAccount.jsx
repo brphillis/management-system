@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
+  Text,
   Flex,
   Button,
-  Image,
+  Heading,
   Input,
   FormControl,
   FormLabel,
@@ -18,24 +19,47 @@ const CreateAccount = ({ supabase, session, setCreateAccount }) => {
   const [role, setRole] = useState(null);
   const [position, setPosition] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [newUserId, setNewUserId] = useState(null);
 
   const createUser = async () => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email: email,
         password: password,
-        data: {
-          firstname: firstname,
-          lastname: lastname,
-          position: position,
-          role: role,
-        },
       });
-      console.log(data);
+      setNewUserId(data.user.id);
+      setSuccess(true);
     } catch (err) {
       console.log(err);
     }
   };
+
+  const updateUser = async () => {
+    try {
+      console.log("running");
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          username: email,
+          firstname: firstname,
+          lastname: lastname,
+          role: role,
+          pos: position,
+        })
+        .eq("id", newUserId);
+      console.log("updateError", error);
+      console.log("newid", newUserId);
+      console.log("FN", firstname);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (success) {
+      updateUser(newUserId);
+    }
+  }, [success]);
 
   return (
     <Flex
@@ -55,20 +79,15 @@ const CreateAccount = ({ supabase, session, setCreateAccount }) => {
       alignItems="center"
       justifyContent="center"
     >
-      <Image
-        src="/images/logo.svg"
-        height="80px"
-        width="80px"
-        marginBottom="30px"
-        marginLeft="-10px"
-        alt="1011010"
-      />
       <form
         onSubmit={(e) => {
           createUser(), e.preventDefault();
         }}
       >
         <FormControl>
+          <Heading fontSize="18px" textAlign="center" mb="5">
+            Create User
+          </Heading>
           <Flex flexDirection="column" alignItems="center" gap="8px">
             <Flex flexDirection="column">
               <FormLabel textAlign="center">Role</FormLabel>
@@ -80,7 +99,7 @@ const CreateAccount = ({ supabase, session, setCreateAccount }) => {
                   setRole(e.target.value);
                 }}
               >
-                <option value="authenticated">Customer</option>
+                <option value="authenticated">Client</option>
                 <option value="">Staff</option>
                 <option value="service_role">Admin</option>
               </Select>

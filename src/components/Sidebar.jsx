@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useUser } from "@supabase/auth-helpers-react";
 import {
   Flex,
   Text,
@@ -20,6 +21,12 @@ import NavItem from "../components/NavItem";
 
 export default function Sidebar({ supabase }) {
   const [navSize, changeNavSize] = useState("small");
+  const user = useUser();
+
+  useEffect(() => {
+    console.log("user", user);
+  }, []);
+
   const logOut = () => {
     supabase.auth.signOut();
   };
@@ -27,7 +34,7 @@ export default function Sidebar({ supabase }) {
     <Flex
       background="white"
       pos="relative"
-      h="95vh"
+      h="99vh"
       borderRadius="6px"
       w={navSize == "small" ? "75px" : "200px"}
       flexDir="column"
@@ -100,14 +107,14 @@ export default function Sidebar({ supabase }) {
         <Flex mt={4} align="center">
           <Flex
             flexDir="column"
-            ml={4}
+            ml="44px"
             display={navSize == "small" ? "none" : "flex"}
           >
             <Heading as="h4" size="sm">
-              George Washington
+              {user.user_metadata.firstname} {user.user_metadata.lastname}
             </Heading>
             <Text color="gray" textAlign="center">
-              Pharmacist
+              {user.user_metadata.position}
             </Text>
           </Flex>
         </Flex>
