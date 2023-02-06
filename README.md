@@ -1,3 +1,29 @@
+//current supabase initial query
+
+create table users (
+  id uuid references auth.users not null primary key,
+  email text,
+  firstname text,
+  lastname text,
+  user_role text,
+  pos text
+);
+
+create or replace function public.handle_new_user() 
+returns trigger as $$
+begin
+  insert into public.users (id, email, firstname, lastname, user_role, pos)
+  values (new.id,new.email, new.raw_user_meta_data->>'firstname', new.raw_user_meta_data->>'lastname', new.raw_user_meta_data->>'user_role', new.raw_user_meta_data->>'pos');
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
