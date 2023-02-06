@@ -43,7 +43,7 @@ export default function Home() {
           {!session ? (
             <Authentication supabase={supabase} />
           ) : (
-            <Dashboard supabase={supabase} />
+            <Dashboard supabase={supabase} session={session} />
           )}
         </Flex>
       </main>

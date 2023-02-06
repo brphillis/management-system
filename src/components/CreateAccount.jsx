@@ -10,7 +10,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 
-const CreateAccount = ({ supabase, setCreateAccount }) => {
+const CreateAccount = ({ supabase, session, setCreateAccount }) => {
   const [email, setEmail] = useState(null);
   const [firstname, setFirstname] = useState(null);
   const [lastname, setLastname] = useState(null);
@@ -23,15 +23,15 @@ const CreateAccount = ({ supabase, setCreateAccount }) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email: email,
-        email_confirm: true,
         password: password,
-        user_metadata: {
+        data: {
           firstname: firstname,
           lastname: lastname,
           position: position,
           role: role,
         },
       });
+      console.log(data);
     } catch (err) {
       console.log(err);
     }
@@ -63,12 +63,17 @@ const CreateAccount = ({ supabase, setCreateAccount }) => {
         marginLeft="-10px"
         alt="1011010"
       />
-      <form onSubmit={createUser}>
+      <form
+        onSubmit={(e) => {
+          createUser(), e.preventDefault();
+        }}
+      >
         <FormControl>
           <Flex flexDirection="column" alignItems="center" gap="8px">
             <Flex flexDirection="column">
               <FormLabel textAlign="center">Role</FormLabel>
               <Select
+                id="Select_Role"
                 backgroundColor="gray.200"
                 borderRadius="2px"
                 onChange={(e) => {
@@ -84,6 +89,7 @@ const CreateAccount = ({ supabase, setCreateAccount }) => {
             <Flex flexDirection="column">
               <FormLabel textAlign="center">Position</FormLabel>
               <Input
+                id="Input_Position"
                 backgroundColor="gray.200"
                 borderRadius="2px"
                 border="1px"
@@ -97,6 +103,7 @@ const CreateAccount = ({ supabase, setCreateAccount }) => {
             <Flex flexDirection="column">
               <FormLabel textAlign="center">Email</FormLabel>
               <Input
+                id="Input_Email"
                 backgroundColor="gray.200"
                 borderRadius="2px"
                 border="1px"
@@ -110,6 +117,7 @@ const CreateAccount = ({ supabase, setCreateAccount }) => {
             <Flex flexDirection="column">
               <FormLabel textAlign="center">First Name</FormLabel>
               <Input
+                id="Input_Firstname"
                 backgroundColor="gray.200"
                 borderRadius="2px"
                 border="1px"
@@ -122,6 +130,7 @@ const CreateAccount = ({ supabase, setCreateAccount }) => {
             <Flex flexDirection="column">
               <FormLabel textAlign="center">Last Name</FormLabel>
               <Input
+                id="Input_Lastname"
                 backgroundColor="gray.200"
                 borderRadius="2px"
                 border="1px"
@@ -134,6 +143,7 @@ const CreateAccount = ({ supabase, setCreateAccount }) => {
             <Flex flexDirection="column">
               <FormLabel textAlign="center">Password</FormLabel>
               <Input
+                id="Input_Password"
                 backgroundColor="gray.200"
                 borderRadius="2px"
                 border="1px"

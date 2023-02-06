@@ -8,7 +8,7 @@ import AdminPanel from "./AdminPanel.jsx";
 import CreateAccount from "./CreateAccount.jsx";
 import UpdateUser from "./UpdateUser.jsx";
 
-const Dashboard = ({ supabase }) => {
+const Dashboard = ({ supabase, session }) => {
   const [createAccount, setCreateAccount] = useState(false);
 
   return (
@@ -29,6 +29,7 @@ const Dashboard = ({ supabase }) => {
         {createAccount && (
           <CreateAccount
             supabase={supabase}
+            session={session}
             setCreateAccount={setCreateAccount}
           />
         )}
