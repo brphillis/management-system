@@ -1,5 +1,6 @@
 current supabase initial query
 
+```bash
 create table users (
   id uuid references auth.users not null primary key,
   email text,
@@ -9,7 +10,6 @@ create table users (
   pos text
 );
 
-```bash
 create or replace function public.handle_new_user() 
 returns trigger as $$
 begin
